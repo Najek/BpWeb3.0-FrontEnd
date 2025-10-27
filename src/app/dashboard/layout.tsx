@@ -59,7 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </List>
         </Box>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, ml: `${drawerWidth}px` }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, }}>
         <Toolbar />
         {children}
       </Box>
