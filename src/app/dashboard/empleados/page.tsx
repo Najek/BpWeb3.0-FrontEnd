@@ -12,7 +12,9 @@ import {
   TableRow,
   Paper,
   CircularProgress,
+  Button,
 } from "@mui/material";
+import EmpleadoCreateModal from "./EmpleadoCreateModal";
 
 const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -31,6 +33,7 @@ export default function EmpleadosPage() {
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEmpelados = async () => {
@@ -45,9 +48,9 @@ export default function EmpleadosPage() {
           setCargando(false);
           return;
         }
-        const res = await axios.get(apiURL + "/api/empleados", {
+        const res = await axios.get(`${apiURL}/api/empleados`, {
           headers: {
-            Authorization: 'Bearer ' + token.trim(),
+            Authorization: `Bearer ${token}`,
           },
         });
         setEmpleados(res.data);
@@ -63,11 +66,33 @@ export default function EmpleadosPage() {
     fetchEmpelados();
   }, []);
 
+  const handleEmpleadoCreado = (nuevoEmpleado: Empleado) => {
+    setEmpleados((prev) => [nuevoEmpleado, ...prev]);
+  };
+
   return (
     <Box>
       <Typography variant="h4" color="secondary" gutterBottom>
         Sección de Empleados
       </Typography>
+
+      {/* Botón para abrir el modal */}
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setModalOpen(true)}
+        >
+          Nuevo Empleado
+        </Button>
+      </Box>
+
+      {/* Modal de creación */}
+      <EmpleadoCreateModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreated={handleEmpleadoCreado}
+      />
 
       {cargando ? (
         <Box display="flex" justifyContent="center" mt={5}>
